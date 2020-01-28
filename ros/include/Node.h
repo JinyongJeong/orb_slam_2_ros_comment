@@ -21,73 +21,73 @@
 #ifndef ORBSLAM2_ROS_NODE_H_
 #define ORBSLAM2_ROS_NODE_H_
 
-#include <vector>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <ros/time.h>
-#include <image_transport/image_transport.h>
 #include <tf/transform_broadcaster.h>
-#include <cv_bridge/cv_bridge.h>
 #include <opencv2/core/core.hpp>
+#include <vector>
 
 #include <dynamic_reconfigure/server.h>
 #include <orb_slam2_ros/dynamic_reconfigureConfig.h>
 
 #include "orb_slam2_ros/SaveMap.h"
 
-#include <message_filters/subscriber.h>
-#include <message_filters/time_synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
-#include <sensor_msgs/image_encodings.h>
-#include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <message_filters/subscriber.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/time_synchronizer.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/image_encodings.h>
 
 #include "System.h"
 
-
-
 class Node
 {
-  public:
-    Node (ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle, image_transport::ImageTransport &image_transport);
-    ~Node ();
+public:
+  Node(ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle,
+       image_transport::ImageTransport &image_transport);
+  ~Node();
 
-  protected:
-    void Update ();
-    ORB_SLAM2::System* orb_slam_;
+protected:
+  void Update();
+  // System is base of orb code
+  ORB_SLAM2::System *orb_slam_;
 
-    ros::Time current_frame_time_;
+  ros::Time current_frame_time_;
 
-  private:
-    void PublishMapPoints (std::vector<ORB_SLAM2::MapPoint*> map_points);
-    void PublishPositionAsTransform (cv::Mat position);
-    void PublishPositionAsPoseStamped(cv::Mat position);
-    void PublishRenderedImage (cv::Mat image);
-    void ParamsChangedCallback(orb_slam2_ros::dynamic_reconfigureConfig &config, uint32_t level);
-    bool SaveMapSrv (orb_slam2_ros::SaveMap::Request &req, orb_slam2_ros::SaveMap::Response &res);
+private:
+  void PublishMapPoints(std::vector<ORB_SLAM2::MapPoint *> map_points);
+  void PublishPositionAsTransform(cv::Mat position);
+  void PublishPositionAsPoseStamped(cv::Mat position);
+  void PublishRenderedImage(cv::Mat image);
+  void ParamsChangedCallback(orb_slam2_ros::dynamic_reconfigureConfig &config, uint32_t level);
+  bool SaveMapSrv(orb_slam2_ros::SaveMap::Request &req, orb_slam2_ros::SaveMap::Response &res);
 
-    tf::Transform TransformFromMat (cv::Mat position_mat);
-    sensor_msgs::PointCloud2 MapPointsToPointCloud (std::vector<ORB_SLAM2::MapPoint*> map_points);
+  tf::Transform TransformFromMat(cv::Mat position_mat);
+  sensor_msgs::PointCloud2 MapPointsToPointCloud(std::vector<ORB_SLAM2::MapPoint *> map_points);
 
-    dynamic_reconfigure::Server<orb_slam2_ros::dynamic_reconfigureConfig> dynamic_param_server_;
+  dynamic_reconfigure::Server<orb_slam2_ros::dynamic_reconfigureConfig> dynamic_param_server_;
 
-    image_transport::Publisher rendered_image_publisher_;
-    ros::Publisher map_points_publisher_;
-    ros::Publisher pose_publisher_;
+  image_transport::Publisher rendered_image_publisher_;
+  ros::Publisher map_points_publisher_;
+  ros::Publisher pose_publisher_;
 
-    ros::ServiceServer service_server_;
+  ros::ServiceServer service_server_;
 
-    std::string name_of_node_;
-    ros::NodeHandle node_handle_;
+  std::string name_of_node_;
+  ros::NodeHandle node_handle_;
 
-    std::string map_frame_id_param_;
-    std::string camera_frame_id_param_;
-    std::string map_file_name_param_;
-    std::string voc_file_name_param_;
-    std::string settings_file_name_param_;
-    bool load_map_param_;
-    bool publish_pointcloud_param_;
-    bool publish_pose_param_;
-    int min_observations_per_point_;
+  std::string map_frame_id_param_;
+  std::string camera_frame_id_param_;
+  std::string map_file_name_param_;
+  std::string voc_file_name_param_;
+  std::string settings_file_name_param_;
+  bool load_map_param_;
+  bool publish_pointcloud_param_;
+  bool publish_pose_param_;
+  int min_observations_per_point_;
 };
 
-#endif //ORBSLAM2_ROS_NODE_H_
+#endif  // ORBSLAM2_ROS_NODE_H_
