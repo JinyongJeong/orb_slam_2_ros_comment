@@ -87,6 +87,7 @@ private:
   bool load_map_param_;
   bool publish_pointcloud_param_;
   bool publish_pose_param_;
+  bool loop_closing_;
   int min_observations_per_point_;
 };
 

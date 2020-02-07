@@ -26,7 +26,7 @@
 namespace ORB_SLAM2
 {
 System::System(const string strVocFile, const string strSettingsFile, const eSensor sensor, const std::string &map_file,
-               bool load_map)
+               bool load_map, bool loop_closing)
   :  // map serialization addition
   mSensor(sensor)
   , mbReset(false)
@@ -34,6 +34,7 @@ System::System(const string strVocFile, const string strSettingsFile, const eSen
   , mbDeactivateLocalizationMode(false)
   , map_file(map_file)
   , load_map(load_map)
+  , loop_closing(loop_closing)
 {
   // Output welcome message
   cout << endl
@@ -119,7 +120,7 @@ System::System(const string strVocFile, const string strSettingsFile, const eSen
   mptLocalMapping = new thread(&ORB_SLAM2::LocalMapping::Run, mpLocalMapper);
 
   // Initialize the Loop Closing thread and launch
-  mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor != MONOCULAR);
+  mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor != MONOCULAR, loop_closing);
   mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
 
   // Set pointers between threads

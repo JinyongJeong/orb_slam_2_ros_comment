@@ -57,7 +57,7 @@ public:
 public:
   // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
   System(const string strVocFile, const string strSettingsFile, const eSensor sensor, const std::string &map_file = "",
-         bool load_map = false);  // map serialization addition
+         bool load_map = false, bool loop_closing = true);  // map serialization addition
 
   // Proccess the given stereo frame. Images must be synchronized and rectified.
   // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
@@ -145,6 +145,7 @@ private:
 
   bool load_map;
 
+  bool loop_closing;
   std::string map_file;
 
   // Input sensor

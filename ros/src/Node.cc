@@ -12,6 +12,7 @@ Node::Node(ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle,
   // static parameters
   node_handle_.param(name_of_node_ + "/publish_pointcloud", publish_pointcloud_param_, true);
   node_handle_.param(name_of_node_ + "/publish_pose", publish_pose_param_, true);
+  node_handle_.param(name_of_node_ + "/loop_closing", loop_closing_, true);
   node_handle_.param<std::string>(name_of_node_ + "/pointcloud_frame_id", map_frame_id_param_, "map");
   node_handle_.param<std::string>(name_of_node_ + "/camera_frame_id", camera_frame_id_param_, "camera_link");
   node_handle_.param<std::string>(name_of_node_ + "/map_file", map_file_name_param_, "map.bin");
@@ -20,7 +21,7 @@ Node::Node(ORB_SLAM2::System::eSensor sensor, ros::NodeHandle &node_handle,
   node_handle_.param(name_of_node_ + "/load_map", load_map_param_, false);
 
   orb_slam_ = new ORB_SLAM2::System(voc_file_name_param_, settings_file_name_param_, sensor, map_file_name_param_,
-                                    load_map_param_);
+                                    load_map_param_, loop_closing_);
 
   service_server_ = node_handle_.advertiseService(name_of_node_ + "/save_map", &Node::SaveMapSrv, this);
 
