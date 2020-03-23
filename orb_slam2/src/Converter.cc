@@ -87,6 +87,7 @@ cv::Mat Converter::toCvMat(const Eigen::Matrix<double,3,1> &m)
             cvMat.at<float>(i)=m(i);
 
     return cvMat.clone();
+    
 }
 
 cv::Mat Converter::toCvSE3(const Eigen::Matrix<double,3,3> &R, const Eigen::Matrix<double,3,1> &t)
